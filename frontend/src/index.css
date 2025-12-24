@@ -13,6 +13,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Use border-box everywhere to avoid unexpected sizing/overflow */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -24,8 +29,8 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  /* keep full-height but avoid flex centering that can cut backgrounds */
+  display: block;
   min-width: 320px;
   min-height: 100vh;
 }

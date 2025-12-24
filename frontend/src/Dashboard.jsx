@@ -1,28 +1,12 @@
-import { useEffect, useState } from "react";
-import { socket } from "./socket";
+import { useStocks } from "../hooks/useStocks";
+import { useStockSubscriptions } from "../hooks/useStockSubscriptions";
 import "./Dashboard.css";
 
 const TICKERS = ["GOOG", "TSLA", "AMZN", "META", "NVDA"];
 
 export default function Dashboard() {
-  const [prices, setPrices] = useState({});
-  const [subscribedTickers, setSubscribedTickers] = useState(new Set());
-
-  useEffect(() => {
-    socket.on("initPrices", setPrices);
-    socket.on("priceUpdate", ({ ticker, price }) => {
-      setPrices(p => ({ ...p, [ticker]: price }));
-    });
-
-    return () => {
-      socket.off("priceUpdate");
-    };
-  }, []);
-
-  const handleSubscribe = (ticker) => {
-    socket.emit("subscribe", ticker);
-    setSubscribedTickers(prev => new Set([...prev, ticker]));
-  };
+  const { prices } = useStocks();
+  const { subscribe, isSubscribed } = useStockSubscriptions();
 
   return (
     <div className="dashboard-container">
@@ -32,18 +16,18 @@ export default function Dashboard() {
       </div>
 
       <div className="stocks-grid">
-        {TICKERS.map(ticker => (
+        {TICKERS.map((ticker) => (
           <div key={ticker} className="stock-card">
             <div className="ticker-name">{ticker}</div>
             <div className="price-display">
               ₹ <span className="price-value">{prices[ticker] ?? "--"}</span>
             </div>
-            <button 
-              className={`subscribe-btn ${subscribedTickers.has(ticker) ? 'subscribed' : ''}`}
-              onClick={() => handleSubscribe(ticker)}
-              disabled={subscribedTickers.has(ticker)}
+            <button
+              className={`subscribe-btn ${isSubscribed(ticker) ? "subscribed" : ""}`}
+              onClick={() => subscribe(ticker)}
+              disabled={isSubscribed(ticker)}
             >
-              {subscribedTickers.has(ticker) ? '✓ Subscribed' : '+ Subscribe'}
+              {isSubscribed(ticker) ? "✓ Subscribed" : "+ Subscribe"}
             </button>
           </div>
         ))}
