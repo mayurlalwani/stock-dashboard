@@ -6,6 +6,7 @@ module.exports = (io, socket) => {
   socket.on("auth:login", email => {
     socket.data.email = email;
     socket.emit("stock:init", stockService.prices);
+    socket.emit("auth:login_success");
   });
 
   socket.on("stock:subscribe", ticker => {

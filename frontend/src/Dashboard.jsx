@@ -4,7 +4,7 @@ import "./Dashboard.css";
 
 const TICKERS = ["GOOG", "TSLA", "AMZN", "META", "NVDA"];
 
-export default function Dashboard() {
+export default function Dashboard({ onLogout }) {
   const { prices } = useStocks();
   const { subscribe, isSubscribed } = useStockSubscriptions();
 
@@ -13,6 +13,9 @@ export default function Dashboard() {
       <div className="dashboard-header">
         <h1>📈 Stock Screener</h1>
         <p className="subtitle">Real-time stock price tracking</p>
+        <button className="logout-btn" onClick={onLogout}>
+          Logout
+        </button>
       </div>
 
       <div className="stocks-grid">
